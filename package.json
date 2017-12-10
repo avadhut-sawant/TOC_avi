@@ -1,0 +1,14 @@
+{
+  "name": "trustedchains",
+  "version": "1.0.0",
+  "description": "Trusted Chain Offers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Avadhut Sawant",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "github:ethereum/web3.js"
+  }
+}

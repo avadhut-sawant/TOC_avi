@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Offerer Acceptor 02</title>
+
+    <link rel="stylesheet" type="text/css" href="TOC.css">
+
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body border=1>
+    <div>
+	<table id="layout" align="center" width="100%" border=0 cellpadding=4 cellspacing=4>
+	<tr>
+	<td colspan="2">
+		<table id="header" align="center" border="0" cellpadding="5" cellspacing="0">
+		<tr>
+		<td>
+			<img src="ProjIcon.jpg" width="120px" height="120px"/>	
+		</td>
+		<td>
+			<h1 align="center">Offer Management: Offer Acceptor 02<h1/>		
+		</td>
+		</tr>
+		<tr>
+		<td colspan="2" align="center">			
+		</td>
+		</tr>			
+		</table>
+	</td>
+	</tr>
+	<tr>
+	<td width="50%" class="table_outer">
+		<table id="cust_inputs" align="center" border="0"  width="100%" cellpadding="5" cellspacing="5">
+		<tr>
+		<td colspan="2" align="center">
+			
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="product_label">Product/Service :</label>
+		</td>
+		<td align="left">
+			<label id="product_value">--</label>
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="merchant_key_label">Offerer Public Key (ID) :</label>
+		</td>
+		<td align="left">
+			<label id="merchant_key_value">--</label>
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="min_accept_label">Minimum Acceptance :</label>
+		</td>
+		<td align="left">
+			<label id="min_accept_value">--</label>
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="discount_label">Discount Offer % :</label>
+		</td>
+		<td align="left">
+			<label id="discount_value">--</label>
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="key_label">My Public Key (ID) :</label>
+		</td>
+		<td align="left">
+			<label id="key_value">--</label>
+			
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="bid_label">Agreed Acceptance (Qty/Volume):</label>
+		</td>
+		<td align="left">
+			<input id="bid_value" type="text" size="5"  class="text_style">
+		</td>
+		</tr>		
+		</table>        
+	</td>
+	<td class="table_sec">
+		<table id="merchant_freeinputs" align="center" border="0"  width="100%" cellpadding="5" cellspacing="5">
+		<tr>
+		<td colspan="2" align="center">
+			
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="need_label">Need Something :</label>
+		</td>
+		<td align="left">
+			<textarea id="need_value" rows="7" cols="20" wrap="hard" class="textarea_style"></textarea>
+		</td>
+		</tr>
+		<tr>
+		<td align="right" width="50%">
+			<label id="deal_label">Final Deal :</label>
+		</td>
+		<td align="left">
+			<input id="deal_value" type="text" size="40" class="text_style">
+		</td>
+		</tr>		
+		<tr>
+		<td align="right" width="50%">
+			<label id="key_label">My Public Key ID :</label>
+		</td>
+		<td align="left">
+				<label id="key_value_2">--</label>
+		</td>
+		</tr>		
+		</table>
+	</td>
+	</td>
+	</tr>
+	<tr>
+	<td align="center">
+		<button id="button_agree">Place Agreement on Chain</button>
+	</td>
+	<td align="center">
+		<button id="button_ask">Place Need on Chain</button>
+	</td>
+	</tr>
+	<tr>
+	<td align="center" colspan="2">
+		<br/>
+		<img id="progress" src="progress.gif" width="70" height="50" />		
+		<label id="msg_label" class="msg"></label>
+	</td>
+	</tr>
+	</table>	
+				
+	<table id="footer" align="center" border="0"cellpadding="0" cellspacing="0" height="100%">
+		<tr>
+		<td>
+			<img src="TeamIcon.jpg" width="60px" height="70px"/>		
+		</td>
+		</tr>
+		</table>
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	
+	<script>
+
+		var curr_offerID;
+
+		   if (typeof web3 !== 'undefined'){
+			   web3 = new Web3(web3.currentProvider);
+		   } else {
+			   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		   }
+	
+		   web3.eth.defaultAccount = web3.eth.accounts[1];
+		   
+		   $("#key_value_2").html(web3.eth.defaultAccount);
+
+		   var TCO = web3.eth.contract([{"constant":true,"inputs":[],"name":"getOfferLength","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"b","type":"bytes"}],"name":"bytesToAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_need","type":"bytes32"},{"name":"_deal","type":"uint256"}],"name":"setffNeed","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_productID","type":"bytes16"},{"name":"_acceptance","type":"uint256"},{"name":"_support","type":"uint256"},{"name":"_dis_percent","type":"uint256"}],"name":"setOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"offers","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"ffidx","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_offerID","type":"uint256"},{"name":"_acceptance","type":"uint256"}],"name":"setResponse","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_id","type":"uint256"}],"name":"getOffers","outputs":[{"name":"","type":"address"},{"name":"","type":"bytes16"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_offerID","type":"uint256"}],"name":"setFFResponse","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"responses","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"productID","type":"bytes16"},{"indexed":false,"name":"acceptance","type":"uint256"},{"indexed":false,"name":"support","type":"uint256"},{"indexed":false,"name":"discount_percent","type":"uint256"},{"indexed":false,"name":"merchant","type":"address"}],"name":"OfferCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"acceptance","type":"uint256"}],"name":"OfferResponded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"total_accept","type":"uint256"}],"name":"OfferCompleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"offerID","type":"uint256"},{"indexed":false,"name":"need","type":"bytes32"},{"indexed":false,"name":"deal","type":"uint256"}],"name":"ffOfferCreated","type":"event"}]);
+
+		   var Contract = TCO.at("0x044802d1f10b616b310bfbd88d305373f38bffe9");
+		   
+		   var OfferCreatedEvent = Contract.OfferCreated();
+
+		   OfferCreatedEvent.watch(function(error,result){
+				if (!error){
+					$("#progress").hide();
+					$("#product_value").html(web3.toAscii(result.args.productID));
+					$("#min_accept_value").html("" + result.args.acceptance);
+					$("#discount_value").html("" + result.args.discount_percent);
+					$("#merchant_key_value").html(result.args.merchant);	
+					curr_offerID = result.args.offerID;		
+					$("#msg_label").html(' Offer with ID = ' + result.args.offerID + ' created successfully');
+				} else {
+					$("#progress").hide();
+					console.log(error);
+				}
+		   }); 
+
+
+		   var OfferRespondedEvent = Contract.OfferResponded();
+
+		   OfferRespondedEvent.watch(function(error,result){
+				if (!error){
+					$("#progress").hide();
+					$("#msg_label").html(' Offer with ID = ' + result.args.offerID + ' responded. Accepted = ' + result.args.acceptance);
+				} else {
+					$("#progress").hide();
+					console.log(error);
+				}
+		   });
+
+		   var OfferCompletedEvent = Contract.OfferCompleted();
+   
+		   OfferCompletedEvent.watch(function(error,result){
+				if (!error){
+					$("#progress").hide();
+					$("#msg_label").html(' Offer with ID = ' + result.args.offerID + ' completed. Accepted = ' + result.args.total_accept);
+				} else {
+					$("#progress").hide();
+					console.log(error);
+				}
+		   });
+
+		   var ffOfferCreatedEvent = Contract.ffOfferCreated();
+		      
+		   ffOfferCreatedEvent.watch(function(error,result){
+				if (!error){
+					$("#label_progress").hide();
+					$("#msg_label").html(' Offer with ID = ' + result.args.offerID + ' created successfully');
+				} else {
+					$("#label_progress").hide();
+					console.log(error);
+				}
+		   });
+	
+		    $("#button_agree").click(function(){
+	       		Contract.setResponse(curr_offerID,$("#bid_value").val(), {gas: 999999999999} , (err,res) => {
+               		if (err) {
+                		$("#progress").hide();
+                		console.log(err);        
+               		}
+           		});
+           		$("#progress").show();
+       		})
+
+			
+
+			$("#button_ask").click(function(){		
+				alert($("#deal_value").val());				
+				Contract.setffNeed($("#need_value").val(),$("#deal_value").val(), {gas: 999999999999} , (err,res) => {
+					if (err) {
+					 $("#progress").hide();
+					 console.log(err);        
+					}
+				});
+           	$("#progress").show(); alert('a');
+       		});
+		   		
+			$("#progress").hide();
+	</script>	   
+
+</body>
+</html>
